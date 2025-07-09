@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphify</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <video autoplay muted loop id="heroVideo">
+    <source src="{{ url_for('static', filename='Hero_video.mp4') }}" type="video/mp4" />
+  </video>
+
+  <div id="overlay"></div>
+
+  <nav>
+    <div id="logo">📊 Graphify</div>
+    <div class="nav-links">
+      <div class="icons"><a href="{{ url_for('main.index') }}">Home</a></div>
+      <div class="icons"><a href="{{ url_for('main.upload') }}">Upload</a></div>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Welcome to Graphify</h1>
+    <p>Visualize and explore your data beautifully!</p>
+    <div id="button">
+      <a href="{{ url_for('main.upload') }}"><button>Get Started</button></a>
+    </div>
+  </main>
+</body>
+</html>
+
