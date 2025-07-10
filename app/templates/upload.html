@@ -18,16 +18,17 @@
     </div>
   </nav>
 
-  <!-- Upload Section -->
-  <main style="text-align:center; padding: 100px 30px;">
-    <h2 style="margin-bottom: 30px;">Upload a CSV or Excel File</h2>
-    
-    <form action="{{ url_for('main.upload_file') }}" method="POST" enctype="multipart/form-data">
-      <input type="file" name="file" accept=".csv, .xlsx" required>
-      <br><br>
-      <button type="submit">Upload</button>
-    </form>
+  <!-- Upload Box Section -->
+  <main>
+    <div class="upload-box">
+      <h2>Upload a CSV or Excel File</h2>
+      <form action="{{ url_for('main.upload_file') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv, .xlsx" required>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
   </main>
 
 </body>
 </html>
+

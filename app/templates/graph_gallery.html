@@ -7,12 +7,13 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
-
+  
   <header>
     <div class="gallery-title">📊 Explore Graph Types</div>
     <p>Click a graph to start visualizing with Seaborn or Matplotlib</p>
   </header>
 
+  <!-- Graph Grid -->
   <section class="graph-grid">
     {% for graph in ['Line Plot', 'Bar Plot', 'Histogram', 'Count Plot', 'Heatmap', 'Scatter Plot', 'Pie Chart', 'Box Plot', 'Violin Plot'] %}
     <div class="graph-card" onclick="showDropdown('{{ graph }}')">
@@ -22,33 +23,37 @@
     {% endfor %}
   </section>
 
-  <section class="dropdown-section" id="dropdownSection" style="display: none; text-align: center; margin-top: 30px;">
-    <h3 id="selectedGraph"></h3>
-    <form action="{{ url_for('main.plot_graph') }}" method="POST">
-      <input type="hidden" name="graph_type" id="graphTypeInput" />
+  <!-- Modal Popup for Dropdown -->
+  <div class="modal" id="dropdownModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeDropdown()">&times;</span>
+      <h3 id="selectedGraph">Selected: </h3>
 
-      <label for="x_column">X-axis:
-        <select name="x_column" required>
-          {% for col in columns %}
-          <option value="{{ col }}">{{ col }}</option>
-          {% endfor %}
-        </select>
-      </label>
+      <form action="{{ url_for('main.plot_graph') }}" method="POST">
+        <input type="hidden" name="graph_type" id="graphTypeInput" />
 
-      <label for="y_column">Y-axis:
-        <select name="y_column" required>
-          {% for col in columns %}
-          <option value="{{ col }}">{{ col }}</option>
-          {% endfor %}
-        </select>
-      </label>
+        <label for="x_column">X-axis:
+          <select name="x_column" required>
+            {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+            {% endfor %}
+          </select>
+        </label>
 
-      <br><br>
-      <button type="submit">Plot Graph</button>
-    </form>
-  </section>
+        <label for="y_column">Y-axis:
+          <select name="y_column" required>
+            {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+            {% endfor %}
+          </select>
+        </label>
 
-  <!-- Link external JS -->
+        <button type="submit">Plot Graph</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
   <script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
 
 </body>
