@@ -13,7 +13,6 @@ function closeDropdown() {
   modal.style.display = 'none';
 }
 
-// Optional: Close the modal if clicked outside the content
 window.onclick = function (event) {
   const modal = document.getElementById('dropdownModal');
   if (event.target === modal) {

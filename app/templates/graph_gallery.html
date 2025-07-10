@@ -7,13 +7,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 <body>
-  
+
   <header>
     <div class="gallery-title">📊 Explore Graph Types</div>
     <p>Click a graph to start visualizing with Seaborn or Matplotlib</p>
   </header>
 
-  <!-- Graph Grid -->
   <section class="graph-grid">
     {% for graph in ['Line Plot', 'Bar Plot', 'Histogram', 'Count Plot', 'Heatmap', 'Scatter Plot', 'Pie Chart', 'Box Plot', 'Violin Plot'] %}
     <div class="graph-card" onclick="showDropdown('{{ graph }}')">
@@ -23,12 +22,11 @@
     {% endfor %}
   </section>
 
-  <!-- Modal Popup for Dropdown -->
+  <!-- Modal -->
   <div class="modal" id="dropdownModal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeDropdown()">&times;</span>
-      <h3 id="selectedGraph">Selected: </h3>
-
+      <h3 id="selectedGraph">Selected:</h3>
       <form action="{{ url_for('main.plot_graph') }}" method="POST">
         <input type="hidden" name="graph_type" id="graphTypeInput" />
 
@@ -41,20 +39,36 @@
         </label>
 
         <label for="y_column">Y-axis:
-          <select name="y_column" required>
+          <select name="y_column">
             {% for col in columns %}
             <option value="{{ col }}">{{ col }}</option>
             {% endfor %}
           </select>
         </label>
 
+        <label for="hue_column">Hue:
+          <select name="hue_column">
+            <option value="">None</option>
+            {% for col in columns %}
+            <option value="{{ col }}">{{ col }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label for="color">Color:
+          <input type="color" name="color" value="#1f77b4">
+        </label>
+
+        <label style="display: block; margin-top: 10px;">
+          <input type="checkbox" name="show_legend" checked> Show Legend
+        </label>
+
+        <br><br>
         <button type="submit">Plot Graph</button>
       </form>
     </div>
   </div>
 
-  <!-- JavaScript -->
   <script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
-
 </body>
 </html>

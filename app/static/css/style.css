@@ -28,7 +28,7 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.3);
   z-index: 1;
 }
 
@@ -60,6 +60,10 @@ nav {
   border-radius: 6px;
   transition: background 0.3s;
 }
+.icons a{
+  text-decoration: none;
+  color: white;
+} 
 
 .icons:hover {
   background-color: rgba(255, 255, 255, 0.2);
@@ -80,7 +84,7 @@ main h1 {
 }
 
 main p {
-  color: #555;
+  color: #cfcfcf;
   font-size: 1.2rem;
 }
 
@@ -167,6 +171,39 @@ header {
 #uploadForm button {
   margin-top: 10px;
 }
+
+/* Color Picker Styling */
+.modal-content input[type="color"] {
+  margin-top: 5px;
+  width: 100%;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px;
+  cursor: pointer;
+  background: #fff;
+  transition: border 0.3s ease;
+}
+
+.modal-content input[type="color"]:hover,
+.modal-content input[type="color"]:focus {
+  border-color: #4a6fdc;
+  outline: none;
+}
+
+/* Checkbox Styling */
+.modal-content input[type="checkbox"] {
+  transform: scale(1.2);
+  accent-color: #1f3b8c; /* modern browsers */
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.modal-content label input[type="checkbox"] + span {
+  color: #333;
+  font-weight: 600;
+}
+
 
 /* Dropdown Modal */
 .modal {

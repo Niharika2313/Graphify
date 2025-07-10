@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Graph Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav>
+    <div id="logo">📊 Graphify</div>
+    <div class="nav-links">
+      <div class="icons"><a href="{{ url_for('main.index') }}">Home</a></div>
+      <div class="icons"><a href="{{ url_for('main.upload') }}">Upload</a></div>
+      <div class="icons"><a href="{{ url_for('main.home') }}">Graphs</a></div>
+    </div>
+  </nav>
+
+  <main style="padding: 60px 30px; text-align: center;">
+    <h2>{{ graph_type }} for {{ x }} vs {{ y }}</h2>
+
+    <div style="overflow-x: auto; max-width: 100%; padding: 20px;">
+      <img src="{{ url_for('main.get_generated_plot') }}" alt="Generated Graph" style="max-width: none;">
+    </div>
+
+    <br><br>
+    <a href="{{ url_for('main.home') }}">
+      <button>Plot Another Graph</button>
+    </a>
+  </main>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ import seaborn as sns
 import io
 
 main = Blueprint('main', __name__)
-temp_df = {}  # In-memory store for uploaded data
+temp_df = {}
 
 @main.route('/')
 def index():
@@ -37,10 +37,8 @@ def upload_file():
             temp_df['data'] = df
             columns = df.columns.tolist()
             return render_template('graph_gallery.html', columns=columns)
-
         except Exception as e:
             return f"Error processing file: {str(e)}", 500
-
     return redirect('/')
 
 @main.route('/plot', methods=['POST'])
@@ -52,39 +50,66 @@ def plot_graph():
     graph_type = request.form.get('graph_type')
     x = request.form.get('x_column')
     y = request.form.get('y_column')
+    hue = request.form.get('hue_column')
+    color = request.form.get('color', '#1f77b4')
+    show_legend = request.form.get('show_legend') == 'on'
 
-    if not (x and y and graph_type):
-        return "Missing input data", 400
+    if not graph_type or not x:
+        return "Missing graph type or x-axis", 400
+    if graph_type.lower() not in ['heatmap', 'pie chart'] and not y:
+        return "Missing y-axis for this graph type", 400
 
     plt.clf()
 
-    plt.figure(figsize=(6, 4))
+    # Adjust figure size based on number of unique x-tick labels
+    num_labels = df[x].nunique()
+    width = max(6, min(20, num_labels * 0.4))
+    plt.figure(figsize=(width, 5))
 
     try:
-        if graph_type.lower() == 'line plot':
-            sns.lineplot(data=df, x=x, y=y)
-        elif graph_type.lower() == 'bar plot':
-            sns.barplot(data=df, x=x, y=y)
-        elif graph_type.lower() == 'histogram':
-            sns.histplot(data=df, x=x)
-        elif graph_type.lower() == 'scatter plot':
-            sns.scatterplot(data=df, x=x, y=y)
-        elif graph_type.lower() == 'count plot':
-            sns.countplot(data=df, x=x)
-        elif graph_type.lower() == 'box plot':
-            sns.boxplot(data=df, x=x, y=y)
-        elif graph_type.lower() == 'violin plot':
-            sns.violinplot(data=df, x=x, y=y)
-        elif graph_type.lower() == 'heatmap':
+        kwargs = {}
+        if hue:
+            kwargs['hue'] = hue
+            kwargs['palette'] = 'Set2'
+        else:
+            kwargs['color'] = color
+
+        gtype = graph_type.lower()
+        if gtype == 'line plot':
+            sns.lineplot(data=df, x=x, y=y, **kwargs)
+        elif gtype == 'bar plot':
+            sns.barplot(data=df, x=x, y=y, **kwargs)
+        elif gtype == 'histogram':
+            sns.histplot(data=df, x=x, **kwargs)
+        elif gtype == 'scatter plot':
+            sns.scatterplot(data=df, x=x, y=y, **kwargs)
+        elif gtype == 'count plot':
+            sns.countplot(data=df, x=x, **kwargs)
+        elif gtype == 'box plot':
+            sns.boxplot(data=df, x=x, y=y, **kwargs)
+        elif gtype == 'violin plot':
+            sns.violinplot(data=df, x=x, y=y, **kwargs)
+        elif gtype == 'heatmap':
             corr = df.corr(numeric_only=True)
             sns.heatmap(corr, annot=True, cmap='Blues')
+        elif gtype == 'pie chart':
+            pie_data = df[x].value_counts()
+            plt.pie(pie_data, labels=pie_data.index, colors=[color]*len(pie_data), autopct='%1.1f%%')
         else:
             return "Unsupported chart type", 400
+
+        if show_legend and hue and gtype not in ['heatmap', 'pie chart']:
+            plt.legend(title=hue)
+        else:
+            plt.legend([], [], frameon=False)
+
+        plt.xticks(rotation=30)
+        plt.tight_layout()
+
     except Exception as e:
         return f"Error while plotting: {str(e)}", 500
 
     buf = io.BytesIO()
-    plt.tight_layout()
     plt.savefig(buf, format='png')
     buf.seek(0)
     plt.close()
