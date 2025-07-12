@@ -8,95 +8,120 @@
 </head>
 <body>
 
-<header>
-  <div class="gallery-title">📊 Explore Graph Types</div>
-  <p>Click a graph to start visualizing with Seaborn or Matplotlib</p>
-</header>
+  <header>
+    <div class="gallery-title">📊 Explore Graph Types</div>
+    <p>Click a graph to start visualizing with Seaborn or Matplotlib</p>
+  </header>
 
-<section class="graph-grid">
-  {% for graph in ['Line Plot', 'Bar Plot', 'Histogram', 'Count Plot', 'Heatmap', 'Scatter Plot', 'Pie Chart', 'Box Plot', 'Violin Plot'] %}
-  <div class="graph-card" onclick="showDropdown('{{ graph }}')">
-    <div class="graph-icon">📊</div>
-    <div class="graph-name">{{ graph }}</div>
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <section class="graph-grid">
+    {% for graph in ['Line Plot', 'Bar Plot', 'Histogram', 'Count Plot', 'Heatmap', 'Scatter Plot', 'Pie Chart', 'Box Plot', 'Violin Plot'] %}
+    <div class="graph-card" onclick="showDropdown('{{ graph }}')">
+      <div class="graph-icon">📊</div>
+      <div class="graph-name">{{ graph }}</div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <!-- Modal -->
+  <div class="modal" id="dropdownModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeDropdown()">&times;</span>
+      <h3 id="selectedGraph">Selected:</h3>
+      <form action="{{ url_for('main.plot_graph') }}" method="POST">
+        <input type="hidden" name="graph_type" id="graphTypeInput" />
+
+        <!-- Pie Chart Label -->
+        <div id="labelDiv">
+          <label for="label_column">Labels:
+            <select name="label_column">
+              {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+
+        <!-- X-axis -->
+        <div id="xDiv">
+          <label for="x_column">X-axis:
+            <select name="x_column">
+              {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+
+        <!-- Y-axis -->
+        <div id="yDiv">
+          <label for="y_column">Y-axis:
+            <select name="y_column">
+              {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+
+        <!-- Hue -->
+        <div id="hueDiv">
+          <label for="hue_column">Hue:
+            <select name="hue_column">
+              <option value="">None</option>
+              {% for col in columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+
+        <!-- Palette -->
+        <div id="paletteDiv">
+          <label for="palette">Palette:
+            <select name="palette">
+              <option value="">Default</option>
+              <option value="Set1">Set1</option>
+              <option value="Set2">Set2</option>
+              <option value="Set3">Set3</option>
+              <option value="Pastel1">Pastel1</option>
+              <option value="Pastel2">Pastel2</option>
+              <option value="Dark2">Dark2</option>
+              <option value="Accent">Accent</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Color Picker -->
+        <div>
+          <label for="color">Color:
+            <input type="color" name="color" value="#1f77b4">
+          </label>
+        </div>
+
+        <!-- Legend Checkbox -->
+        <div id="legendDiv">
+          <label>
+            <input type="checkbox" name="show_legend" checked> Show Legend
+          </label>
+        </div>
+
+        <br><br>
+        <button type="submit">Plot Graph</button>
+      </form>
+    </div>
   </div>
-  {% endfor %}
-</section>
 
-<!-- Modal -->
-<div class="modal" id="dropdownModal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeDropdown()">&times;</span>
-    <h3 id="selectedGraph">Selected:</h3>
-    <form action="{{ url_for('main.plot_graph') }}" method="POST">
-      <input type="hidden" name="graph_type" id="graphTypeInput" />
-
-      <!-- Label for pie chart -->
-      <div id="labelDiv">
-        <label>Label Column:
-          <select name="label_column" id="labelSelect">
-            {% for col in columns %}
-            <option value="{{ col }}">{{ col }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-
-      <!-- X-axis -->
-      <div id="xDiv">
-        <label>X-axis:
-          <select name="x_column" id="xSelect">
-            {% for col in columns %}
-            <option value="{{ col }}">{{ col }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-
-      <!-- Y-axis -->
-      <div id="yDiv">
-        <label>Y-axis:
-          <select name="y_column" id="ySelect">
-            {% for col in columns %}
-            <option value="{{ col }}">{{ col }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-
-      <!-- Hue -->
-      <div id="hueDiv">
-        <label>Hue:
-          <select name="hue_column" id="hueSelect">
-            <option value="">None</option>
-            {% for col in columns %}
-            <option value="{{ col }}">{{ col }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-
-      <!-- Palette -->
-      <div id="paletteDiv">
-        <label>Palette:
-          <select name="palette">
-            {% for pal in ['Set2','Set1','tab10','pastel','muted','dark'] %}
-            <option value="{{ pal }}">{{ pal }}</option>
-            {% endfor %}
-          </select>
-        </label>
-      </div>
-
-      <!-- Legend toggle -->
-      <div id="legendDiv" style="margin-top:10px;">
-        <label><input type="checkbox" name="show_legend" checked> Show Legend</label>
-      </div>
-
-      <br><br>
-      <button type="submit">Plot Graph</button>
-    </form>
-  </div>
-</div>
-
-<script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='javascript/script.js') }}"></script>
 </body>
 </html>

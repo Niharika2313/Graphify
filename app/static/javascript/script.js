@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // --- Graph Modal Dropdown Logic ---
   window.showDropdown = function (graphName) {
     const modal = document.getElementById('dropdownModal');
     const graphInput = document.getElementById('graphTypeInput');
     document.getElementById('selectedGraph').textContent = "Selected: " + graphName;
     graphInput.value = graphName;
 
-    // Divs
     const labelDiv = document.getElementById('labelDiv');
     const xDiv = document.getElementById('xDiv');
     const yDiv = document.getElementById('yDiv');
@@ -13,32 +13,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const paletteDiv = document.getElementById('paletteDiv');
     const legendDiv = document.getElementById('legendDiv');
 
-    // Reset all to visible (default)
     [labelDiv, xDiv, yDiv, hueDiv, paletteDiv, legendDiv].forEach(div => {
-      div.style.display = 'block';
+      if (div) div.style.display = 'block';
     });
 
     const lower = graphName.toLowerCase();
 
     if (lower === 'pie chart') {
-      labelDiv.style.display = 'block';
-      xDiv.style.display = 'none';
-      yDiv.style.display = 'none';
-      hueDiv.style.display = 'none';
-      paletteDiv.style.display = 'block';
-      legendDiv.style.display = 'block';
+      if (labelDiv) labelDiv.style.display = 'block';
+      if (xDiv) xDiv.style.display = 'none';
+      if (yDiv) yDiv.style.display = 'none';
+      if (hueDiv) hueDiv.style.display = 'none';
+      if (paletteDiv) paletteDiv.style.display = 'block';
+      if (legendDiv) legendDiv.style.display = 'block';
     } else if (lower === 'heatmap') {
       [labelDiv, xDiv, yDiv, hueDiv, paletteDiv, legendDiv].forEach(div => {
-        div.style.display = 'none';
+        if (div) div.style.display = 'none';
       });
     } else if (lower === 'histogram' || lower === 'count plot') {
-      labelDiv.style.display = 'none';
-      yDiv.style.display = 'none';
-      hueDiv.style.display = 'none';
-      paletteDiv.style.display = 'block';
-      legendDiv.style.display = 'none';
+      if (labelDiv) labelDiv.style.display = 'none';
+      if (yDiv) yDiv.style.display = 'none';
+      if (hueDiv) hueDiv.style.display = 'none';
+      if (paletteDiv) paletteDiv.style.display = 'block';
+      if (legendDiv) legendDiv.style.display = 'none';
     } else {
-      labelDiv.style.display = 'none';
+      if (labelDiv) labelDiv.style.display = 'none';
+      // others stay visible
     }
 
     modal.style.display = 'flex';
@@ -54,4 +54,13 @@ document.addEventListener("DOMContentLoaded", function () {
       modal.style.display = 'none';
     }
   };
+
+  // --- Flash Message Auto-dismiss ---
+  const messages = document.querySelectorAll('.flash-message');
+  messages.forEach(msg => {
+    setTimeout(() => {
+      msg.style.opacity = '0';
+      setTimeout(() => msg.remove(), 500); // remove after fade out
+    }, 4000); // 4 seconds
+  });
 });
