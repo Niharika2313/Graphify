@@ -1,21 +1,57 @@
-function showDropdown(graphName) {
-  const modal = document.getElementById('dropdownModal');
-  const selectedGraph = document.getElementById('selectedGraph');
-  const graphTypeInput = document.getElementById('graphTypeInput');
+document.addEventListener("DOMContentLoaded", function () {
+  window.showDropdown = function (graphName) {
+    const modal = document.getElementById('dropdownModal');
+    const graphInput = document.getElementById('graphTypeInput');
+    document.getElementById('selectedGraph').textContent = "Selected: " + graphName;
+    graphInput.value = graphName;
 
-  modal.style.display = 'flex';
-  selectedGraph.textContent = "Selected: " + graphName;
-  graphTypeInput.value = graphName;
-}
+    // Divs
+    const labelDiv = document.getElementById('labelDiv');
+    const xDiv = document.getElementById('xDiv');
+    const yDiv = document.getElementById('yDiv');
+    const hueDiv = document.getElementById('hueDiv');
+    const paletteDiv = document.getElementById('paletteDiv');
+    const legendDiv = document.getElementById('legendDiv');
 
-function closeDropdown() {
-  const modal = document.getElementById('dropdownModal');
-  modal.style.display = 'none';
-}
+    // Reset all to visible (default)
+    [labelDiv, xDiv, yDiv, hueDiv, paletteDiv, legendDiv].forEach(div => {
+      div.style.display = 'block';
+    });
 
-window.onclick = function (event) {
-  const modal = document.getElementById('dropdownModal');
-  if (event.target === modal) {
-    modal.style.display = 'none';
-  }
-}
+    const lower = graphName.toLowerCase();
+
+    if (lower === 'pie chart') {
+      labelDiv.style.display = 'block';
+      xDiv.style.display = 'none';
+      yDiv.style.display = 'none';
+      hueDiv.style.display = 'none';
+      paletteDiv.style.display = 'block';
+      legendDiv.style.display = 'block';
+    } else if (lower === 'heatmap') {
+      [labelDiv, xDiv, yDiv, hueDiv, paletteDiv, legendDiv].forEach(div => {
+        div.style.display = 'none';
+      });
+    } else if (lower === 'histogram' || lower === 'count plot') {
+      labelDiv.style.display = 'none';
+      yDiv.style.display = 'none';
+      hueDiv.style.display = 'none';
+      paletteDiv.style.display = 'block';
+      legendDiv.style.display = 'none';
+    } else {
+      labelDiv.style.display = 'none';
+    }
+
+    modal.style.display = 'flex';
+  };
+
+  window.closeDropdown = function () {
+    document.getElementById('dropdownModal').style.display = 'none';
+  };
+
+  window.onclick = function (event) {
+    const modal = document.getElementById('dropdownModal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+});

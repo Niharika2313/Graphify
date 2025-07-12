@@ -52,29 +52,27 @@ def plot_graph():
     y = request.form.get('y_column')
     hue = request.form.get('hue_column')
     color = request.form.get('color', '#1f77b4')
+    palette = request.form.get('palette')
+    label_column = request.form.get('label_column')
     show_legend = request.form.get('show_legend') == 'on'
 
-    if not graph_type or not x:
-        return "Missing graph type or x-axis", 400
-    if graph_type.lower() not in ['heatmap', 'pie chart'] and not y:
-        return "Missing y-axis for this graph type", 400
+    if not graph_type:
+        return "Missing graph type", 400
 
     plt.clf()
-
-    # Adjust figure size based on number of unique x-tick labels
-    num_labels = df[x].nunique()
-    width = max(6, min(20, num_labels * 0.4))
-    plt.figure(figsize=(width, 5))
+    plt.figure(figsize=(10, 6))
 
     try:
+        gtype = graph_type.lower()
         kwargs = {}
+
         if hue:
             kwargs['hue'] = hue
-            kwargs['palette'] = 'Set2'
+            kwargs['palette'] = palette if palette else 'Set2'
         else:
-            kwargs['color'] = color
+            if gtype != 'pie chart':  # pie handles color differently
+                kwargs['color'] = color
 
-        gtype = graph_type.lower()
         if gtype == 'line plot':
             sns.lineplot(data=df, x=x, y=y, **kwargs)
         elif gtype == 'bar plot':
@@ -90,17 +88,33 @@ def plot_graph():
         elif gtype == 'violin plot':
             sns.violinplot(data=df, x=x, y=y, **kwargs)
         elif gtype == 'heatmap':
-            corr = df.corr(numeric_only=True)
+            numeric_df = df.select_dtypes(include='number')
+            if 'SR No' in numeric_df.columns:
+                numeric_df = numeric_df.drop(columns=['SR No'])
+            corr = numeric_df.corr()
             sns.heatmap(corr, annot=True, cmap='Blues')
         elif gtype == 'pie chart':
-            pie_data = df[x].value_counts()
-            plt.pie(pie_data, labels=pie_data.index, colors=[color]*len(pie_data), autopct='%1.1f%%')
+            if not label_column:
+                return "Label column is required for pie chart", 400
+
+            pie_data = df[label_column].value_counts()
+            colors = sns.color_palette(palette if palette else 'Set2', len(pie_data))
+            wedges, texts, autotexts = plt.pie(
+                pie_data,
+                labels=pie_data.index,
+                autopct='%1.1f%%',
+                startangle=90,
+                colors=colors
+            )
+            if show_legend:
+                plt.legend(wedges, pie_data.index, title=label_column, bbox_to_anchor=(1, 0.5))
+            plt.axis('equal')  # makes the pie chart a circle
         else:
             return "Unsupported chart type", 400
 
-        if show_legend and hue and gtype not in ['heatmap', 'pie chart']:
+        if gtype not in ['heatmap', 'pie chart'] and show_legend and hue:
             plt.legend(title=hue)
-        else:
+        elif gtype not in ['heatmap', 'pie chart']:
             plt.legend([], [], frameon=False)
 
         plt.xticks(rotation=30)

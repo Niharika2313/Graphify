@@ -60,7 +60,7 @@ nav {
   border-radius: 6px;
   transition: background 0.3s;
 }
-.icons a{
+.icons a {
   text-decoration: none;
   color: white;
 } 
@@ -194,18 +194,12 @@ header {
 /* Checkbox Styling */
 .modal-content input[type="checkbox"] {
   transform: scale(1.2);
-  accent-color: #1f3b8c; /* modern browsers */
+  accent-color: #1f3b8c;
   margin-right: 8px;
   cursor: pointer;
 }
 
-.modal-content label input[type="checkbox"] + span {
-  color: #333;
-  font-weight: 600;
-}
-
-
-/* Dropdown Modal */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -230,7 +224,6 @@ header {
   position: relative;
 }
 
-/* Close Button */
 .close-btn {
   position: absolute;
   right: 15px;
@@ -292,7 +285,7 @@ header {
   background: linear-gradient(to right, #4a6fdc, #1f3b8c);
 }
 
-/* Upload Box Style */
+/* Upload Box */
 .upload-box {
   margin: 100px auto;
   max-width: 500px;
@@ -335,4 +328,9 @@ header {
 .upload-box button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Hide form groups conditionally */
+#xDiv, #yDiv, #hueDiv, #labelDiv, #paletteDiv, #legendDiv {
+  transition: all 0.3s ease-in-out;
 }
