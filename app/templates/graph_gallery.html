@@ -86,28 +86,14 @@
           </label>
         </div>
 
-        <!-- Palette -->
-        <div id="paletteDiv">
-          <label for="palette">Palette:
-            <select name="palette">
-              <option value="">Default</option>
-              <option value="Set1">Set1</option>
-              <option value="Set2">Set2</option>
-              <option value="Set3">Set3</option>
-              <option value="Pastel1">Pastel1</option>
-              <option value="Pastel2">Pastel2</option>
-              <option value="Dark2">Dark2</option>
-              <option value="Accent">Accent</option>
-            </select>
-          </label>
-        </div>
-
-        <!-- Color Picker -->
-        <div>
-          <label for="color">Color:
-            <input type="color" name="color" value="#1f77b4">
-          </label>
-        </div>
+        <label for="palette">Palette:
+        <select name="palette">
+          <option value="">Default</option>
+          {% for p in palettes %}
+          <option value="{{ p }}">{{ p }}</option>
+          {% endfor %}
+        </select>
+        </label>
 
         <!-- Legend Checkbox -->
         <div id="legendDiv">

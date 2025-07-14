@@ -9,6 +9,16 @@ import io
 main = Blueprint('main', __name__)
 temp_df = {}
 
+AVAILABLE_PALETTES = sorted([
+    "deep", "muted", "pastel", "dark", "colorblind", "bright",
+    "Set1", "Set2", "Set3",
+    "Paired", "Pastel1", "Pastel2", "Dark2", "Accent",
+    "tab10", "tab20", "tab20b", "tab20c",
+    "hls", "husl", "cubehelix",
+    "rocket", "mako", "flare", "crest", "viridis", "plasma", "inferno", "magma", "cividis"
+])
+
+
 @main.route('/')
 def index():
     return render_template('index.html')
@@ -37,16 +47,15 @@ def upload_file():
 
             temp_df['data'] = df
             columns = df.columns.tolist()
-            flash("File uploaded successfully!", "success")  # ✅ success message added
-            return render_template('graph_gallery.html', columns=columns)
+            flash("File uploaded successfully!", "success")
+            return render_template('graph_gallery.html', columns=columns, palettes=AVAILABLE_PALETTES)
 
         except Exception as e:
             flash(f"Error processing file: {str(e)}", "error")
             return redirect('/upload')
-    
+
     flash("No file uploaded", "error")
     return redirect('/upload')
-
 
 
 @main.route('/plot', methods=['POST'])
@@ -61,7 +70,6 @@ def plot_graph():
     y = request.form.get('y_column')
     hue = request.form.get('hue_column')
     label_column = request.form.get('label_column')
-    color = request.form.get('color', '#1f77b4')
     palette = request.form.get('palette') or 'Set2'
     show_legend = request.form.get('show_legend') == 'on'
 
@@ -90,12 +98,14 @@ def plot_graph():
                 return redirect('/upload')
             plt.figure(figsize=(10, 8))
             sns.heatmap(corr, annot=True, cmap='Blues')
+
         elif gtype == 'pie chart':
             colors = sns.color_palette(palette, len(pie_data))
             plt.figure(figsize=(7, 7))
             plt.pie(pie_data, labels=pie_data.index, colors=colors, autopct='%1.1f%%')
             if show_legend:
                 plt.legend(pie_data.index, title=label_column, loc='best')
+
         else:
             width = max(6, min(20, df[x].nunique() * 0.4))
             plt.figure(figsize=(width, 5))
@@ -104,8 +114,6 @@ def plot_graph():
             if hue:
                 kwargs['hue'] = hue
                 kwargs['palette'] = palette
-            else:
-                kwargs['color'] = color
 
             if gtype == 'line plot':
                 sns.lineplot(data=df, x=x, y=y, **kwargs)
@@ -143,3 +151,4 @@ def plot_graph():
     buf.seek(0)
     plt.close()
     return send_file(buf, mimetype='image/png')
+
