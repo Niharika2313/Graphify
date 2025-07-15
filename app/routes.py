@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, send_file, redirect, flash
+from flask import Blueprint, render_template, request, send_file, redirect, flash, url_for
 import pandas as pd
 import matplotlib
 matplotlib.use('Agg')
@@ -43,7 +43,7 @@ def upload_file():
                 df = pd.read_excel(file)
             else:
                 flash("Unsupported file type", "error")
-                return redirect('/upload')
+                return redirect(url_for('/upload'))
 
             temp_df['data'] = df
             columns = df.columns.tolist()

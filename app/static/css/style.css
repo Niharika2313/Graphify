@@ -45,9 +45,23 @@ nav {
 }
 
 #logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
+
+.logo-img {
+  height: 52px;         /* Increased from 40px */
+  width: auto;
+  max-height: 60px;     /* Slightly higher max */
+}
+
+@media (max-width: 600px) {
+  .logo-img {
+    height: 42px;        /* Increased from 32px */
+  }
+}
+
+
 
 .nav-links {
   display: flex;
@@ -154,6 +168,27 @@ header {
 .graph-name {
   font-weight: 600;
   color: #1f3b8c;
+}
+
+/*Home button*/
+.home-icon-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  text-decoration: none;
+  font-size: 28px;
+  background: #1f3b8c;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, transform 0.3s;
+  z-index: 1000;
+}
+
+.home-icon-btn:hover {
+  background: #4a6fdc;
+  transform: scale(1.1);
 }
 
 /* Upload Form Adjustments */
