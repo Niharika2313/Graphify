@@ -23,10 +23,6 @@ AVAILABLE_PALETTES = sorted([
 def index():
     return render_template('index.html')
 
-@main.route('/home')
-def home():
-    return render_template('home.html')
-
 @main.route('/upload', methods=['GET'])
 def upload():
     return render_template('upload.html')
@@ -52,10 +48,10 @@ def upload_file():
 
         except Exception as e:
             flash(f"Error processing file: {str(e)}", "error")
-            return redirect('/upload')
+            return redirect(url_for('/upload'))
 
     flash("No file uploaded", "error")
-    return redirect('/upload')
+    return redirect(url_for('/upload'))
 
 
 @main.route('/plot', methods=['POST'])
@@ -63,7 +59,7 @@ def plot_graph():
     df = temp_df.get('data')
     if df is None:
         flash("No dataset found. Please upload again.", "error")
-        return redirect('/upload')
+        return redirect(url_for('/upload'))
 
     graph_type = request.form.get('graph_type')
     x = request.form.get('x_column')
@@ -75,7 +71,7 @@ def plot_graph():
 
     if not graph_type:
         flash("Graph type is required", "error")
-        return redirect('/upload')
+        return redirect(url_for('/upload'))
 
     gtype = graph_type.lower()
 
@@ -86,7 +82,7 @@ def plot_graph():
         pie_data = df[label_column].value_counts()
     elif gtype != 'heatmap' and (not x or (gtype not in ['histogram', 'count plot'] and not y)):
         flash("Missing required fields (X or Y axis)", "error")
-        return redirect('/upload')
+        return redirect(url_for('/upload'))
 
     plt.clf()
 
@@ -144,7 +140,7 @@ def plot_graph():
 
     except Exception as e:
         flash(f"Error while plotting: {str(e)}", "error")
-        return redirect('/upload')
+        return redirect(url_for('/upload'))
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png')

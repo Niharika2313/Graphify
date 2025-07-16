@@ -61,8 +61,6 @@ nav {
   }
 }
 
-
-
 .nav-links {
   display: flex;
   gap: 20px;
@@ -168,27 +166,6 @@ header {
 .graph-name {
   font-weight: 600;
   color: #1f3b8c;
-}
-
-/*Home button*/
-.home-icon-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  text-decoration: none;
-  font-size: 28px;
-  background: #1f3b8c;
-  color: white;
-  padding: 10px 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s, transform 0.3s;
-  z-index: 1000;
-}
-
-.home-icon-btn:hover {
-  background: #4a6fdc;
-  transform: scale(1.1);
 }
 
 /* Upload Form Adjustments */
@@ -319,9 +296,11 @@ header {
   transform: scale(1.03);
   background: linear-gradient(to right, #4a6fdc, #1f3b8c);
 }
+/* Upload Page Styles */
 
 /* Upload Box */
 .upload-box {
+  position: relative;
   margin: 100px auto;
   max-width: 500px;
   background: white;
@@ -363,6 +342,33 @@ header {
 .upload-box button:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Centered Home Button BELOW the upload box */
+.home-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px; /* Close but not sticking */
+}
+
+/* Home Icon Button */
+.home-icon-btn {
+  font-size: 36px; /* Larger icon size */
+  text-decoration: none;
+  color: white;
+  background: #1f3b8c;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s, transform 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-icon-btn:hover {
+  background: #4a6fdc;
+  transform: scale(1.1);
 }
 
 /* Hide form groups conditionally */

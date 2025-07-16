@@ -8,11 +8,6 @@
 </head>
 <body>
 
-  <!-- Minimal Home Button -->
-   <a href="{{ url_for('main.index') }}" class="home-icon-btn" title="Go to Home">
-    &#8962;
-   </a>
-
   <!-- Upload Box Section -->
   <main>
     <div class="upload-box">
@@ -34,6 +29,13 @@
         <button type="submit">Upload</button>
       </form>
     </div>
+
+      <!-- Home Button perfectly centered below -->
+      <div class="home-button-container">
+        <a href="{{ url_for('main.index') }}" class="home-icon-btn" title="Go to Home">
+        &#8962;
+        </a>
+      </div>
   </main>
 
 </body>
