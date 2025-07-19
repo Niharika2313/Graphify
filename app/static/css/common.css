@@ -1,0 +1,46 @@
+/* Reset and page background */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Flash Messages as Toast */
+.flash-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 15px 20px;
+  max-width: 600px;
+  width: fit-content;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+/* Flash message types */
+.flash-message.message {
+  background-color: #d9edf7;
+  color: #31708f;
+}
+
+.flash-message.success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.flash-message.error {
+  background-color: #f2dede;
+  color: #a94442;
+}
