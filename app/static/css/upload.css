@@ -62,22 +62,19 @@
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Centered Home Button BELOW the upload box */
+/* Position the Home Button to top-right corner */
 .home-button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px; /* Close but not sticking */
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
 /* Home Icon Button */
 .home-icon-btn {
-  font-size: 36px; /* Larger icon size */
+  font-size: 25px; /* Slightly smaller to fit better in corner */
   text-decoration: none;
-  color: white;
-  background: #1f3b8c;
-  padding: 10px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: white;
+  border-radius: 6px;
   transition: background 0.3s, transform 0.3s;
   display: flex;
   align-items: center;
@@ -85,6 +82,6 @@
 }
 
 .home-icon-btn:hover {
-  background: #4a6fdc;
+  background: #91a0cd;
   transform: scale(1.1);
 }

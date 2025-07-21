@@ -13,6 +13,11 @@
   <main>
     <div class="upload-box">
       <h2>Upload a CSV or Excel File</h2>
+      <div class="home-button-container">
+        <a href="{{ url_for('main.index') }}" class="home-icon-btn" title="Go to Home">
+        &#x274c;
+        </a>
+      </div>
 
       <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -31,12 +36,6 @@
       </form>
     </div>
 
-      <!-- Home Button perfectly centered below -->
-      <div class="home-button-container">
-        <a href="{{ url_for('main.index') }}" class="home-icon-btn" title="Go to Home">
-        &#8962;
-        </a>
-      </div>
   </main>
 
 </body>
