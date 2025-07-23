@@ -13,15 +13,20 @@ header {
 
 /* Graph Grid */
 .graph-grid {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
-  padding: 40px;
+  padding: 40px 20px;
+  box-sizing: border-box;
 }
 
 .graph-card {
-  width: 160px;
-  height: 160px;
+  width: 100%; /* Let it fill the column */
+  max-width: 200px; /* Prevent it from becoming too wide */
+  height: auto;
   padding: 15px;
   text-align: center;
   background: white;
@@ -29,8 +34,8 @@ header {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.2s;
+  justify-self: center;  /* Center each card in its cell */
 }
-
 
 .graph-card:hover {
   transform: scale(1.05);
