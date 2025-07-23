@@ -28,7 +28,7 @@
   <section class="graph-grid">
     {% for graph in ['Line Plot', 'Bar Plot', 'Histogram', 'Count Plot', 'Heatmap', 'Scatter Plot', 'Pie Chart', 'Box Plot', 'Violin Plot'] %}
     <div class="graph-card" onclick="showDropdown('{{ graph }}')">
-      <div class="graph-icon">📊</div>
+      <img class="graph-icon" src="{{ url_for('static', filename='images/' + graph|lower|replace(' ', '_') + '.png') }}" alt="{{ graph }}">
       <div class="graph-name">{{ graph }}</div>
     </div>
     {% endfor %}
