@@ -147,4 +147,3 @@ def plot_graph():
     buf.seek(0)
     plt.close()
     return send_file(buf, mimetype='image/png')
-
