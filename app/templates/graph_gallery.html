@@ -14,7 +14,6 @@
     <p>Click a graph to start visualizing with Seaborn or Matplotlib</p>
   </header>
 
-  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -34,7 +33,6 @@
     {% endfor %}
   </section>
 
-  <!-- Modal -->
   <div class="modal" id="dropdownModal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeDropdown()">&times;</span>
@@ -42,9 +40,17 @@
       <form action="{{ url_for('main.plot_graph') }}" method="POST">
         <input type="hidden" name="graph_type" id="graphTypeInput" />
 
-        <!-- Pie Chart Label -->
+        <div id="heatmapDiv">
+          <label for="heatmap_columns">Select Columns (Ctrl/Cmd + Click):
+            <select name="heatmap_columns" multiple size="6">
+              {% for col in numeric_columns %}
+              <option value="{{ col }}">{{ col }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
         <div id="labelDiv">
-          <label for="label_column">Labels:
+          <label for="label_column">Category Column:
             <select name="label_column">
               {% for col in columns %}
               <option value="{{ col }}">{{ col }}</option>
@@ -53,7 +59,6 @@
           </label>
         </div>
 
-        <!-- X-axis -->
         <div id="xDiv">
           <label for="x_column">X-axis:
             <select name="x_column">
@@ -64,7 +69,6 @@
           </label>
         </div>
 
-        <!-- Y-axis -->
         <div id="yDiv">
           <label for="y_column">Y-axis:
             <select name="y_column">
@@ -75,9 +79,8 @@
           </label>
         </div>
 
-        <!-- Hue -->
         <div id="hueDiv">
-          <label for="hue_column">Hue:
+          <label for="hue_column">Group By (Hue):
             <select name="hue_column">
               <option value="">None</option>
               {% for col in columns %}
@@ -96,7 +99,6 @@
         </select>
         </label>
 
-        <!-- Legend Checkbox -->
         <div id="legendDiv">
           <label>
             <input type="checkbox" name="show_legend" checked> Show Legend

@@ -30,7 +30,7 @@ def upload():
 @main.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files.get('file')
-    if file:
+    if file and file.filename:
         filename = file.filename
         try:
             if filename.endswith('.csv'):
@@ -38,20 +38,23 @@ def upload_file():
             elif filename.endswith('.xlsx'):
                 df = pd.read_excel(file)
             else:
-                flash("Unsupported file type", "error")
-                return redirect(url_for('/upload'))
+                flash("Unsupported file type. Please upload a CSV or XLSX file.", "error")
+                return redirect(url_for('main.upload'))
 
             temp_df['data'] = df
             columns = df.columns.tolist()
+            numeric_columns = df.select_dtypes(include='number').columns.tolist()
+
             flash("File uploaded successfully!", "success")
-            return render_template('graph_gallery.html', columns=columns, palettes=AVAILABLE_PALETTES)
+            
+            return render_template('graph_gallery.html', columns=columns, numeric_columns=numeric_columns, palettes=AVAILABLE_PALETTES)
 
         except Exception as e:
             flash(f"Error processing file: {str(e)}", "error")
-            return redirect(url_for('/upload'))
+            return redirect(url_for('main.upload'))
 
-    flash("No file uploaded", "error")
-    return redirect(url_for('/upload'))
+    flash("No file was uploaded.", "error")
+    return redirect(url_for('main.upload'))
 
 
 @main.route('/plot', methods=['POST'])
@@ -59,7 +62,7 @@ def plot_graph():
     df = temp_df.get('data')
     if df is None:
         flash("No dataset found. Please upload again.", "error")
-        return redirect(url_for('/upload'))
+        return redirect(url_for('main.upload'))
 
     graph_type = request.form.get('graph_type')
     x = request.form.get('x_column')
@@ -71,29 +74,32 @@ def plot_graph():
 
     if not graph_type:
         flash("Graph type is required", "error")
-        return redirect(url_for('/upload'))
+        return redirect(url_for('main.upload'))
 
     gtype = graph_type.lower()
 
     if gtype == 'pie chart':
         if not label_column:
             flash("Label column is required for Pie Chart", "error")
-            return redirect('/upload')
+            return redirect(url_for('main.upload'))
         pie_data = df[label_column].value_counts()
     elif gtype != 'heatmap' and (not x or (gtype not in ['histogram', 'count plot'] and not y)):
         flash("Missing required fields (X or Y axis)", "error")
-        return redirect(url_for('/upload'))
+        return redirect(url_for('main.upload'))
 
     plt.clf()
 
     try:
         if gtype == 'heatmap':
-            corr = df.corr(numeric_only=True)
-            if corr.empty:
-                flash("No numeric columns available for heatmap", "error")
-                return redirect('/upload')
+            selected_columns = request.form.getlist('heatmap_columns')
+            if not selected_columns or len(selected_columns) < 2:
+                flash("Please select at least two numeric columns for the heatmap.", "error")
+                return redirect(url_for('main.upload'))
+
+            corr = df[selected_columns].corr()
+            
             plt.figure(figsize=(10, 8))
-            sns.heatmap(corr, annot=True, cmap='Blues')
+            sns.heatmap(corr, annot=True, cmap='viridis')
 
         elif gtype == 'pie chart':
             colors = sns.color_palette(palette, len(pie_data))
@@ -127,20 +133,21 @@ def plot_graph():
                 sns.violinplot(data=df, x=x, y=y, **kwargs)
             else:
                 flash("Unsupported chart type", "error")
-                return redirect('/upload')
+                return redirect(url_for('main.upload'))
 
             if show_legend and hue:
                 plt.legend(title=hue)
             elif not show_legend:
-                plt.legend([], [], frameon=False)
+                if plt.gca().get_legend() is not None:
+                    plt.gca().get_legend().remove()
 
-            plt.xticks(rotation=30)
+            plt.xticks(rotation=30, ha='right')
 
         plt.tight_layout()
 
     except Exception as e:
         flash(f"Error while plotting: {str(e)}", "error")
-        return redirect(url_for('/upload'))
+        return redirect(url_for('main.upload'))
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png')

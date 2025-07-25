@@ -1,66 +1,74 @@
+// Get modal element
+const modal = document.getElementById("dropdownModal");
+
+// Get all the form option divs
+const heatmapDiv = document.getElementById("heatmapDiv");
+const labelDiv = document.getElementById("labelDiv");
+const xDiv = document.getElementById("xDiv");
+const yDiv = document.getElementById("yDiv");
+const hueDiv = document.getElementById("hueDiv");
+const legendDiv = document.getElementById("legendDiv");
+
+// Get the hidden input and the title
+const graphTypeInput = document.getElementById("graphTypeInput");
+const selectedGraphTitle = document.getElementById("selectedGraph");
+
+// Function to open and configure the modal
+function showDropdown(graphType) {
+  // --- 1. Reset all fields to hidden ---
+  heatmapDiv.style.display = "none";
+  labelDiv.style.display = "none";
+  xDiv.style.display = "none";
+  yDiv.style.display = "none";
+  hueDiv.style.display = "none";
+  legendDiv.style.display = "block"; // Default to showing legend option
+
+  // --- 2. Set the graph type in the hidden input and title ---
+  graphTypeInput.value = graphType;
+  selectedGraphTitle.textContent = `Selected: ${graphType}`;
+
+  // --- 3. Show only the relevant fields based on graph type ---
+  if (graphType === "Heatmap") {
+    heatmapDiv.style.display = "block";
+    legendDiv.style.display = "none"; // Legend is not applicable for heatmap
+  } else if (graphType === "Pie Chart") {
+    labelDiv.style.display = "block";
+  } else if (graphType === "Histogram" || graphType === "Count Plot") {
+    xDiv.style.display = "block";
+    hueDiv.style.display = "block"; // Hue is applicable
+  } else {
+    // For Line, Bar, Scatter, Box, Violin plots
+    xDiv.style.display = "block";
+    yDiv.style.display = "block";
+    hueDiv.style.display = "block";
+  }
+
+  // --- 4. Display the modal ---
+  modal.style.display = "flex"; // Using flex to align with your CSS
+}
+
+// Function to close the modal
+function closeDropdown() {
+  modal.style.display = "none";
+}
+
+// Close the modal if the user clicks outside of the modal content
+window.onclick = function(event) {
+  if (event.target == modal) {
+    closeDropdown();
+  }
+};
+
+// --- Optional: Flash Message Auto-dismiss ---
 document.addEventListener("DOMContentLoaded", function () {
-  // --- Graph Modal Dropdown Logic ---
-  window.showDropdown = function (graphName) {
-    const modal = document.getElementById('dropdownModal');
-    const graphInput = document.getElementById('graphTypeInput');
-    document.getElementById('selectedGraph').textContent = "Selected: " + graphName;
-    graphInput.value = graphName;
-
-    const labelDiv = document.getElementById('labelDiv');
-    const xDiv = document.getElementById('xDiv');
-    const yDiv = document.getElementById('yDiv');
-    const hueDiv = document.getElementById('hueDiv');
-    const paletteDiv = document.getElementById('paletteDiv');
-    const legendDiv = document.getElementById('legendDiv');
-
-    [labelDiv, xDiv, yDiv, hueDiv, paletteDiv, legendDiv].forEach(div => {
-      if (div) div.style.display = 'block';
+    const messages = document.querySelectorAll('.flash-message');
+    messages.forEach(msg => {
+        setTimeout(() => {
+            // Start fading out
+            msg.style.transition = 'opacity 0.5s ease';
+            msg.style.opacity = '0';
+            // Remove from DOM after fade out transition ends
+            setTimeout(() => msg.remove(), 500); 
+        }, 4000); // Start fade out after 4 seconds
     });
-
-    const lower = graphName.toLowerCase();
-
-    if (lower === 'pie chart') {
-      if (labelDiv) labelDiv.style.display = 'block';
-      if (xDiv) xDiv.style.display = 'none';
-      if (yDiv) yDiv.style.display = 'none';
-      if (hueDiv) hueDiv.style.display = 'none';
-      if (paletteDiv) paletteDiv.style.display = 'block';
-      if (legendDiv) legendDiv.style.display = 'block';
-    } else if (lower === 'heatmap') {
-      [labelDiv, xDiv, yDiv, hueDiv, paletteDiv, legendDiv].forEach(div => {
-        if (div) div.style.display = 'none';
-      });
-    } else if (lower === 'histogram' || lower === 'count plot') {
-      if (labelDiv) labelDiv.style.display = 'none';
-      if (yDiv) yDiv.style.display = 'none';
-      if (hueDiv) hueDiv.style.display = 'none';
-      if (paletteDiv) paletteDiv.style.display = 'block';
-      if (legendDiv) legendDiv.style.display = 'none';
-    } else {
-      if (labelDiv) labelDiv.style.display = 'none';
-      // others stay visible
-    }
-
-    modal.style.display = 'flex';
-  };
-
-  window.closeDropdown = function () {
-    document.getElementById('dropdownModal').style.display = 'none';
-  };
-
-  window.onclick = function (event) {
-    const modal = document.getElementById('dropdownModal');
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  };
-
-  // --- Flash Message Auto-dismiss ---
-  const messages = document.querySelectorAll('.flash-message');
-  messages.forEach(msg => {
-    setTimeout(() => {
-      msg.style.opacity = '0';
-      setTimeout(() => msg.remove(), 500); // remove after fade out
-    }, 4000); // 4 seconds
-  });
 });
