@@ -11,13 +11,18 @@ temp_df = {}
 
 AVAILABLE_PALETTES = sorted([
     "deep", "muted", "pastel", "dark", "colorblind", "bright",
-    "Set1", "Set2", "Set3",
-    "Paired", "Pastel1", "Pastel2", "Dark2", "Accent",
-    "tab10", "tab20", "tab20b", "tab20c",
-    "hls", "husl", "cubehelix",
+    "Set1", "Set2", "Set3", "Paired", "Pastel1", "Pastel2", "Dark2", "Accent",
+    "tab10", "tab20", "tab20b", "tab20c", "hls", "husl", "cubehelix",
     "rocket", "mako", "flare", "crest", "viridis", "plasma", "inferno", "magma", "cividis"
 ])
 
+# NEW: Add a list of available colormaps for heatmaps
+AVAILABLE_CMAPS = [
+    'viridis', 'plasma', 'inferno', 'magma', 'cividis', 'Greys', 'Purples',
+    'Blues', 'Greens', 'Oranges', 'Reds', 'YlOrBr', 'YlOrRd', 'OrRd',
+    'PuRd', 'RdPu', 'BuPu', 'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn',
+    'YlGn', 'coolwarm', 'bwr', 'seismic', 'rocket', 'mako'
+]
 
 @main.route('/')
 def index():
@@ -38,16 +43,20 @@ def upload_file():
             elif filename.endswith('.xlsx'):
                 df = pd.read_excel(file)
             else:
-                flash("Unsupported file type. Please upload a CSV or XLSX file.", "error")
+                flash("Unsupported file type.", "error")
                 return redirect(url_for('main.upload'))
 
             temp_df['data'] = df
             columns = df.columns.tolist()
             numeric_columns = df.select_dtypes(include='number').columns.tolist()
-
             flash("File uploaded successfully!", "success")
             
-            return render_template('graph_gallery.html', columns=columns, numeric_columns=numeric_columns, palettes=AVAILABLE_PALETTES)
+            # MODIFIED: Pass the new cmaps list to the template
+            return render_template('graph_gallery.html',
+                                   columns=columns,
+                                   numeric_columns=numeric_columns,
+                                   palettes=AVAILABLE_PALETTES,
+                                   cmaps=AVAILABLE_CMAPS)
 
         except Exception as e:
             flash(f"Error processing file: {str(e)}", "error")
@@ -71,6 +80,9 @@ def plot_graph():
     label_column = request.form.get('label_column')
     palette = request.form.get('palette') or 'Set2'
     show_legend = request.form.get('show_legend') == 'on'
+    color_selection = request.form.get('color_picker')
+    # NEW: Get the selected colormap from the form
+    cmap_selection = request.form.get('cmap_selection')
 
     if not graph_type:
         flash("Graph type is required", "error")
@@ -95,11 +107,10 @@ def plot_graph():
             if not selected_columns or len(selected_columns) < 2:
                 flash("Please select at least two numeric columns for the heatmap.", "error")
                 return redirect(url_for('main.upload'))
-
             corr = df[selected_columns].corr()
-            
             plt.figure(figsize=(10, 8))
-            sns.heatmap(corr, annot=True, cmap='viridis')
+            # MODIFIED: Use the selected cmap, with 'viridis' as a fallback
+            sns.heatmap(corr, annot=True, cmap=cmap_selection or 'viridis')
 
         elif gtype == 'pie chart':
             colors = sns.color_palette(palette, len(pie_data))
@@ -108,15 +119,16 @@ def plot_graph():
             if show_legend:
                 plt.legend(pie_data.index, title=label_column, loc='best')
 
-        else:
+        else: 
             width = max(6, min(20, df[x].nunique() * 0.4))
             plt.figure(figsize=(width, 5))
-
             kwargs = {}
             if hue:
                 kwargs['hue'] = hue
                 kwargs['palette'] = palette
-
+            elif color_selection:
+                kwargs['color'] = color_selection
+            
             if gtype == 'line plot':
                 sns.lineplot(data=df, x=x, y=y, **kwargs)
             elif gtype == 'bar plot':
@@ -140,7 +152,6 @@ def plot_graph():
             elif not show_legend:
                 if plt.gca().get_legend() is not None:
                     plt.gca().get_legend().remove()
-
             plt.xticks(rotation=30, ha='right')
 
         plt.tight_layout()

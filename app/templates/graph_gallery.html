@@ -48,7 +48,16 @@
               {% endfor %}
             </select>
           </label>
+
+          <label for="cmap_selection">Colormap:
+            <select name="cmap_selection">
+                {% for cmap in cmaps %}
+                <option value="{{ cmap }}">{{ cmap }}</option>
+                {% endfor %}
+            </select>
+          </label>
         </div>
+        
         <div id="labelDiv">
           <label for="label_column">Category Column:
             <select name="label_column">
@@ -81,7 +90,7 @@
 
         <div id="hueDiv">
           <label for="hue_column">Group By (Hue):
-            <select name="hue_column">
+            <select name="hue_column" id="hueSelect">
               <option value="">None</option>
               {% for col in columns %}
               <option value="{{ col }}">{{ col }}</option>
@@ -90,14 +99,21 @@
           </label>
         </div>
 
-        <label for="palette">Palette:
-        <select name="palette">
-          <option value="">Default</option>
-          {% for p in palettes %}
-          <option value="{{ p }}">{{ p }}</option>
-          {% endfor %}
-        </select>
-        </label>
+        <div id="paletteDiv">
+            <label for="palette">Palette:
+                <select name="palette">
+                    {% for p in palettes %}
+                    <option value="{{ p }}">{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+        
+        <div id="colorPickerDiv">
+            <label for="color_picker">Color:
+                <input type="color" name="color_picker" value="#1f3b8c">
+            </label>
+        </div>
 
         <div id="legendDiv">
           <label>
